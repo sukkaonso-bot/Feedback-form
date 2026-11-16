@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แบบประเมินประสิทธิภาพและความพึงพอใจ - ระบบติดตามการให้สารน้ำและยาทางหลอดเลือดดำ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Sarabun', sans-serif; }
+    .radio-cell input[type="radio"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+      accent-color: #1D5EA8;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; }
+      .shadow-lg, .shadow-md, .shadow-sm { box-shadow: none !important; border: 1px solid #e2e8f0; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-16">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-[#0B3D6B] to-[#1D5EA8] text-white py-8 px-4 shadow-md">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div>
+        <div class="inline-block bg-blue-900/50 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full mb-3 border border-blue-400/30">
+          แบบสำรวจความคิดเห็นและประเมินผลระบบสารสนเทศทางการพยาบาล
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold leading-tight">
+          แบบประเมินประสิทธิภาพและความพึงพอใจในการใช้งาน
+        </h1>
+        <p class="text-blue-100 text-base md:text-lg mt-1">
+          ระบบติดตามการให้สารน้ำและยาทางหลอดเลือดดำ (IV Monitoring System)
+        </p>
+      </div>
+      <div class="no-print shrink-0">
+        <button type="button" onclick="openAdminAuthModal()" class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white border border-white/30 font-semibold text-xs sm:text-sm px-4 py-2 rounded-xl backdrop-blur-xs transition shadow-sm">
+          <span>🔐 ผู้ดูแลระบบ</span>
+          <span class="bg-white text-[#0B3D6B] text-xs font-bold px-2 py-0.5 rounded-full" id="headerAdminBadge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 mt-6 space-y-6">
+
+    <!-- Intro Card -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 border-l-4 border-l-[#1D5EA8]">
+      <h2 class="font-bold text-slate-800 text-base mb-1">คำชี้แจง</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        แบบประเมินนี้จัดทำขึ้นเพื่อสำรวจความคิดเห็น ความพึงพอใจ และประสิทธิภาพของการนำระบบดิจิทัลมาใช้ในการบันทึกและติดตามการให้สารน้ำและยาทางหลอดเลือดดำประจำหน่วยงาน ข้อมูลที่ได้จะนำไปใช้ในการปรับปรุงและพัฒนาระบบให้ตอบโจทย์การทำงานของพยาบาลและทีมสหสาขาวิชาชีพมากยิ่งขึ้น
+      </p>
+    </div>
+
+    <!-- Form Container -->
+    <form id="evalForm" onsubmit="handleSubmit(event)" class="space-y-6">
+
+      <!-- Section 1: Demographics -->
+      <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-lg font-bold text-[#0B3D6B]">ส่วนที่ 1: ข้อมูลทั่วไปของผู้ตอบแบบประเมิน</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Role -->
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">1. ตำแหน่ง / วิชาชีพ <span class="text-red-500">*</span></label>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-200">
+                <input type="radio" name="role" value="พยาบาลวิชาชีพ (RN)" required class="accent-[#1D5EA8] w-4 h-4">
+                <span>พยาบาลวิชาชีพ (RN)</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-200">
+                <input type="radio" name="role" value="ผู้ช่วยพยาบาล (PN)" class="accent-[#1D5EA8] w-4 h-4">
+                <span>ผู้ช่วยพยาบาล (PN)</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-200">
+                <input type="radio" name="role" value="ผู้ช่วยเหลือคนไข้ (NA)" class="accent-[#1D5EA8] w-4 h-4">
+                <span>ผู้ช่วยเหลือคนไข้ (NA)</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-200">
+                <input type="radio" name="role" value="หัวหน้าหอผู้ป่วย" class="accent-[#1D5EA8] w-4 h-4">
+                <span>หัวหน้าหอผู้ป่วย</span>
+              </label>
+              <div class="flex items-center gap-2.5 p-2">
+                <input type="radio" name="role" value="อื่น ๆ" id="roleOtherRadio" class="accent-[#1D5EA8] w-4 h-4">
+                <span class="whitespace-nowrap">อื่น ๆ:</span>
+                <input type="text" id="roleOtherText" placeholder="ระบุตำแหน่ง..." onfocus="document.getElementById('roleOtherRadio').checked=true" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#1D5EA8]">
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-5">
+            <!-- Experience -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-2">2. ประสบการณ์การทำงานในหน่วยงานปัจจุบัน <span class="text-red-500">*</span></label>
+              <select name="experience" required class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 bg-white focus:outline-none focus:border-[#1D5EA8]">
+                <option value="">-- เลือกประสบการณ์การทำงาน --</option>
+                <option value="น้อยกว่า 1 ปี">น้อยกว่า 1 ปี</option>
+                <option value="1 – 5 ปี">1 – 5 ปี</option>
+                <option value="6 – 10 ปี">6 – 10 ปี</option>
+                <option value="มากกว่า 10 ปี">มากกว่า 10 ปี</option>
+              </select>
+            </div>
+
+            <!-- Usage Duration -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-2">3. ระยะเวลาที่ทดลองใช้งานระบบ <span class="text-red-500">*</span></label>
+              <select name="duration" required class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 bg-white focus:outline-none focus:border-[#1D5EA8]">
+                <option value="">-- เลือกระยะเวลาที่ใช้งาน --</option>
+                <option value="น้อยกว่า 1 สัปดาห์">น้อยกว่า 1 สัปดาห์</option>
+                <option value="1 – 4 สัปดาห์">1 – 4 สัปดาห์</option>
+                <option value="มากกว่า 1 เดือนขึ้นไป">มากกว่า 1 เดือนขึ้นไป</option>
+              </select>
+            </div>
+
+            <!-- Ward Name (Optional) -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-2">4. ชื่อหน่วยงาน / หอผู้ป่วย (ไม่บังคับ)</label>
+              <input type="text" name="ward" placeholder="เช่น 20/9 ศัลยกรรมชาย, ICU" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#1D5EA8]">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 1.5: KPI & System Targets -->
+      <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-lg font-bold text-[#0B3D6B]">ส่วนที่ 2: ตัวชี้วัดประสิทธิภาพและค่าเป้าหมายของระบบ (KPI & Targets)</h2>
+          <p class="text-xs text-slate-500 mt-0.5">กรุณากำหนดค่าเป้าหมายของหน่วยงาน และระบุผลลัพธ์จริงที่เกิดขึ้นเพื่อเปรียบเทียบประสิทธิภาพของระบบ</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- KPI 1: Overdue IV Fluid Changes -->
+          <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 space-y-3">
+            <div class="flex items-start gap-2">
+              <span class="bg-[#1D5EA8] text-white text-xs font-bold px-2 py-0.5 rounded-md mt-0.5">KPI 1</span>
+              <h3 class="font-bold text-slate-800 text-sm leading-snug">จำนวนครั้งที่สารน้ำ/ยาหมดเกินเวลาที่ควรเปลี่ยนขวด (ครั้ง/เดือน)</h3>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">กำหนดค่าเป้าหมาย (Target)</label>
+              <input type="text" name="kpi1_target" value="0 ครั้ง/เดือน (หรือลดลง ≥ 80%)" placeholder="เช่น 0 ครั้ง/เดือน" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-[#1D5EA8]">
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">ก่อนใช้ระบบ (ครั้ง)</label>
+                <input type="number" min="0" name="kpi1_before" placeholder="เช่น 12" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:border-[#1D5EA8]">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">หลังใช้ระบบ (ครั้ง)</label>
+                <input type="number" min="0" name="kpi1_after" placeholder="เช่น 0" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:border-[#1D5EA8]">
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 2: Monthly Report Preparation Time -->
+          <div class="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 space-y-3">
+            <div class="flex items-start gap-2">
+              <span class="bg-[#2E7D4F] text-white text-xs font-bold px-2 py-0.5 rounded-md mt-0.5">KPI 2</span>
+              <h3 class="font-bold text-slate-800 text-sm leading-snug">เวลาที่ใช้จัดทำรายงานสรุปผลสิ้นเดือน (นาที/เดือน)</h3>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">กำหนดค่าเป้าหมาย (Target)</label>
+              <input type="text" name="kpi2_target" value="ไม่เกิน 15 นาที/เดือน (ลดเวลาลง ≥ 75%)" placeholder="เช่น ไม่เกิน 15 นาที" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-[#2E7D4F]">
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">ก่อนใช้ระบบ (นาที)</label>
+                <input type="number" min="0" name="kpi2_before" placeholder="เช่น 120" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:border-[#2E7D4F]">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">หลังใช้ระบบ (นาที)</label>
+                <input type="number" min="0" name="kpi2_after" placeholder="เช่น 5" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:border-[#2E7D4F]">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Likert Scale Evaluation -->
+      <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-[#0B3D6B]">ส่วนที่ 3: การประเมินประสิทธิภาพการใช้งานและความพึงพอใจ</h2>
+            <p class="text-xs text-slate-500 mt-0.5">เกณฑ์คะแนน: <b>5</b> = มากที่สุด | <b>4</b> = มาก | <b>3</b> = ปานกลาง | <b>2</b> = น้อย | <b>1</b> = น้อยที่สุด</p>
+          </div>
+          <button type="button" onclick="fillAllFive()" class="no-print self-start sm:self-auto text-xs bg-blue-50 text-[#1D5EA8] hover:bg-blue-100 font-semibold px-3 py-1.5 rounded-lg border border-blue-200 transition">
+            ✨ เลือก 5 คะแนนทั้งหมด (ทดสอบ)
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse min-w-[650px]">
+            <thead>
+              <tr class="bg-[#0B3D6B] text-white text-xs sm:text-sm">
+                <th class="py-3 px-3 text-left rounded-tl-xl">รายการประเมิน</th>
+                <th class="py-3 px-2 text-center w-16">5<br><span class="font-normal text-[11px] text-blue-200">มากที่สุด</span></th>
+                <th class="py-3 px-2 text-center w-16">4<br><span class="font-normal text-[11px] text-blue-200">มาก</span></th>
+                <th class="py-3 px-2 text-center w-16">3<br><span class="font-normal text-[11px] text-blue-200">ปานกลาง</span></th>
+                <th class="py-3 px-2 text-center w-16">2<br><span class="font-normal text-[11px] text-blue-200">น้อย</span></th>
+                <th class="py-3 px-2 text-center w-16 rounded-tr-xl">1<br><span class="font-normal text-[11px] text-blue-200">น้อยที่สุด</span></th>
+              </tr>
+            </thead>
+            <tbody id="questionsBody" class="divide-y divide-slate-200 text-sm">
+              <!-- Questions injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 3: Open-ended Feedback -->
+      <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-lg font-bold text-[#0B3D6B]">ส่วนที่ 4: ข้อเสนอแนะและปัญหาที่พบจากการใช้งาน</h2>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">1. จุดเด่นของระบบที่ท่านชื่นชอบและช่วยในการปฏิบัติงานมากที่สุด</label>
+          <textarea name="strengths" rows="2" placeholder="พิมพ์ความคิดเห็นของท่าน..." class="w-full text-sm border border-slate-300 rounded-xl p-3 focus:outline-none focus:border-[#1D5EA8]"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">2. ปัญหา อุปสรรค หรือข้อจำกัดที่พบระหว่างการใช้งาน</label>
+          <textarea name="issues" rows="2" placeholder="ระบุปัญหาที่พบ (ถ้ามี)..." class="w-full text-sm border border-slate-300 rounded-xl p-3 focus:outline-none focus:border-[#1D5EA8]"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">3. ข้อเสนอแนะเพิ่มเติมเพื่อการพัฒนาต่อยอดในอนาคต</label>
+          <textarea name="suggestions" rows="2" placeholder="ข้อเสนอแนะเพิ่มเติม..." class="w-full text-sm border border-slate-300 rounded-xl p-3 focus:outline-none focus:border-[#1D5EA8]"></textarea>
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <div class="no-print flex flex-wrap items-center justify-between gap-4 pt-2">
+        <button type="button" onclick="resetForm()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold text-sm transition">
+          ล้างข้อมูลแบบประเมิน
+        </button>
+        <div class="flex flex-wrap gap-3">
+          <button type="button" onclick="openAdminAuthModal()" class="px-5 py-2.5 rounded-xl border border-[#1D5EA8] text-[#1D5EA8] bg-white hover:bg-blue-50 font-semibold text-sm transition">
+            🔐 ผู้ดูแลระบบ: แดชบอร์ดสรุปผล (<span id="savedCountBadge">0</span> ราย)
+          </button>
+          <button type="submit" class="px-7 py-2.5 rounded-xl bg-[#2E7D4F] hover:bg-[#1e5635] text-white font-bold text-sm shadow-md transition">
+            ✅ ส่งแบบประเมิน
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Thank You Card (Shown after submit without exposing scores to non-admins) -->
+    <div id="resultSection" class="hidden bg-white rounded-2xl p-8 shadow-md border-2 border-[#2E7D4F] text-center space-y-4">
+      <div class="w-16 h-16 bg-emerald-100 text-[#2E7D4F] rounded-full flex items-center justify-center text-3xl mx-auto">
+        ✓
+      </div>
+      <div>
+        <span class="inline-block bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full mb-2">บันทึกข้อมูลเรียบร้อยแล้ว</span>
+        <h3 class="text-xl font-bold text-slate-800">ขอขอบพระคุณที่ร่วมตอบแบบประเมิน</h3>
+        <p class="text-sm text-slate-600 mt-1 max-w-md mx-auto">
+          ข้อมูลความคิดเห็นและข้อเสนอแนะของท่านได้รับการบันทึกเข้าสู่ระบบเรียบร้อยแล้ว เพื่อนำไปใช้พัฒนาคุณภาพการดูแลผู้ป่วยต่อไป
+        </p>
+      </div>
+
+      <div class="no-print flex flex-wrap justify-center gap-3 pt-3">
+        <button type="button" onclick="resetForNextPerson()" class="px-6 py-2.5 rounded-xl bg-[#1D5EA8] hover:bg-[#0B3D6B] text-white text-sm font-semibold shadow-sm transition">
+          ➕ ทำแบบประเมินสำหรับผู้ตอบท่านถัดไป
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Admin Authentication Modal -->
+  <div id="adminAuthModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-[#0B3D6B] text-white px-6 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-base">🔐 เข้าสู่โหมดผู้ดูแลระบบ (Admin)</h3>
+        <button type="button" onclick="closeAdminAuthModal()" class="text-white/80 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+      <form onsubmit="verifyAdminPin(event)" class="p-6 space-y-4">
+        <p class="text-xs text-slate-600 leading-relaxed">
+          กรุณากรอกรหัสผ่านผู้ดูแลระบบเพื่อเข้าดูคะแนนผลการประเมิน ค่าเฉลี่ยรายข้อ (Mean / S.D.) และส่งออกไฟล์ Excel
+        </p>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">รหัสผ่านผู้ดูแลระบบ</label>
+          <input type="password" id="adminPinInput" required placeholder="กรอกรหัสผ่าน..." class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#1D5EA8]">
+          <p id="adminPinError" class="text-xs text-red-600 font-semibold mt-1.5 hidden">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</p>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeAdminAuthModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-semibold">
+            ยกเลิก
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#1D5EA8] hover:bg-[#0B3D6B] text-white text-sm font-bold shadow-sm">
+            เข้าสู่แดชบอร์ด
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Summary Dashboard Modal -->
+  <div id="dashboardModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-[#0B3D6B] text-white px-6 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-lg">📊 สรุปผลรวมการประเมินทั้งหมด (เก็บในเครื่องนี้)</h3>
+        <button onclick="closeDashboardModal()" class="text-white/80 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+      <div id="dashboardBody" class="p-6 overflow-y-auto space-y-6 flex-1">
+        <!-- Dashboard content injected here -->
+      </div>
+      <div class="bg-slate-50 px-6 py-3.5 border-t border-slate-200 flex flex-wrap justify-between items-center gap-3">
+        <button type="button" onclick="clearAllStored()" class="text-xs text-red-600 hover:underline font-semibold">
+          🗑️ ล้างข้อมูลสะสมทั้งหมด
+        </button>
+        <div class="flex gap-2">
+          <button type="button" onclick="exportSummaryCsv()" class="px-4 py-2 rounded-xl bg-[#2E7D4F] hover:bg-[#1e5635] text-white text-sm font-semibold">
+            📥 ส่งออกผลเป็นไฟล์ Excel (.csv)
+          </button>
+          <button type="button" onclick="closeDashboardModal()" class="px-4 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 text-sm font-semibold">
+            ปิดหน้าต่าง
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Alert / Toast -->
+  <div id="toastBox" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm px-5 py-3 rounded-xl shadow-lg hidden z-50 transition"></div>
+
+  <script>
+    const DOMAINS = [
+      {
+        id: 'd1',
+        title: 'ด้านที่ 1: ความง่ายในการใช้งานและการออกแบบหน้าจอ (Usability & UI)',
+        items: [
+          { id: 'q1_1', text: '1.1 การจัดวางหน้าจอ สีสัน และขนาดตัวอักษรอ่านง่าย ชัดเจน สบายตา' },
+          { id: 'q1_2', text: '1.2 การแยกสถานะเตียงว่าง (สีจาง) และเตียงที่มีผู้ป่วย (สีเข้ม) ช่วยให้มองเห็นภาพรวมของหอผู้ป่วยได้ชัดเจน' },
+          { id: 'q1_3', text: '1.3 ขั้นตอนการบันทึกข้อมูล (รับผู้ป่วยใหม่, เปิดเส้น, ย้ายเตียง, จำหน่าย) เข้าใจง่ายและไม่ซับซ้อน' },
+          { id: 'q1_4', text: '1.4 การประเมิน A-DIVA score และการบันทึกเกรด Phlebitis / Extravasation / Infiltration ทำได้สะดวก' }
+        ]
+      },
+      {
+        id: 'd2',
+        title: 'ด้านที่ 2: ประสิทธิภาพในการเฝ้าระวังและความปลอดภัยของผู้ป่วย (Patient Safety)',
+        items: [
+          { id: 'q2_1', text: '2.1 ระบบคำนวณเวลาที่สารน้ำ/ยาจะหมดอัตโนมัติ มีความแม่นยำและช่วยลดภาระการคำนวณ' },
+          { id: 'q2_2', text: '2.2 ระบบเสียงและหน้าต่างแจ้งเตือน (Alert) เมื่อใกล้ถึงรอบตรวจหรือสารน้ำใกล้หมด ช่วยป้องกันความคลาดเคลื่อนได้จริง' },
+          { id: 'q2_3', text: '2.3 การแจ้งเตือนอัตโนมัติเมื่อมีการสั่งใช้ยาความเสี่ยงสูง (High Alert Drugs) ช่วยเพิ่มความตระหนักในการเฝ้าระวัง' }
+        ]
+      },
+      {
+        id: 'd3',
+        title: 'ด้านที่ 3: การลดภาระงานเอกสารและการจัดการข้อมูล (Workflow & Reporting)',
+        items: [
+          { id: 'q3_1', text: '3.1 การบันทึกผู้ปฏิบัติงานประจำเวรด้วยเลข รพก. และการใช้รหัสผู้ป่วยแทนชื่อ-สกุล มีความปลอดภัยตามหลัก PDPA' },
+          { id: 'q3_2', text: '3.2 ฟีเจอร์ "ยกยอดสารน้ำไปวันถัดไป" ช่วยลดเวลาการเขียนบันทึกซ้ำซ้อนในการเปลี่ยนวันใหม่ได้มาก' },
+          { id: 'q3_3', text: '3.3 การนำเข้าข้อมูลจากมือถือ (Google Form / CSV) ทำงานร่วมกับระบบหลักได้อย่างราบรื่น' },
+          { id: 'q3_4', text: '3.4 รายงานสรุปรายเดือนและการคำนวณอัตราการเกิดภาวะแทรกซ้อน (% Rate) ครบถ้วน นำไปใช้ส่งตัวชี้วัดคุณภาพได้ทันที' }
+        ]
+      },
+      {
+        id: 'd4',
+        title: 'ด้านที่ 4: ความพึงพอใจโดยรวม (Overall Satisfaction)',
+        items: [
+          { id: 'q4_1', text: '4.1 ความเสถียรและความรวดเร็วในการประมวลผลของระบบ' },
+          { id: 'q4_2', text: '4.2 ความพึงพอใจโดยรวมต่อการใช้งานระบบติดตามการให้สารน้ำ/ยาทางหลอดเลือดดำ' }
+        ]
+      }
+    ];
+
+    const STORAGE_KEY = 'iv_monitoring_eval_responses_v1';
+    const ADMIN_PIN = '1234';
+    let isAdminUnlocked = false;
+
+    function openAdminAuthModal() {
+      if (isAdminUnlocked) {
+        openDashboardModal();
+        return;
+      }
+      const modal = document.getElementById('adminAuthModal');
+      const input = document.getElementById('adminPinInput');
+      const err = document.getElementById('adminPinError');
+      input.value = '';
+      err.classList.add('hidden');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeAdminAuthModal() {
+      const modal = document.getElementById('adminAuthModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function verifyAdminPin(e) {
+      e.preventDefault();
+      const input = document.getElementById('adminPinInput');
+      const err = document.getElementById('adminPinError');
+      if (input.value.trim() === ADMIN_PIN) {
+        isAdminUnlocked = true;
+        closeAdminAuthModal();
+        openDashboardModal();
+      } else {
+        err.classList.remove('hidden');
+        input.select();
+      }
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      box.textContent = msg;
+      box.classList.remove('hidden');
+      setTimeout(() => box.classList.add('hidden'), 3000);
+    }
+
+    function renderQuestions() {
+      const tbody = document.getElementById('questionsBody');
+      let html = '';
+      DOMAINS.forEach(domain => {
+        html += `
+          <tr class="bg-blue-50/80">
+            <td colspan="6" class="py-2.5 px-3 font-bold text-[#0B3D6B] text-xs sm:text-sm">
+              ${domain.title}
+            </td>
+          </tr>
+        `;
+        domain.items.forEach(item => {
+          html += `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-3 px-3 text-slate-700 leading-snug">${item.text} <span class="text-red-500">*</span></td>
+              ${[5, 4, 3, 2, 1].map(score => `
+                <td class="py-3 px-2 text-center radio-cell">
+                  <input type="radio" name="${item.id}" value="${score}" required aria-label="${item.text} คะแนน ${score}">
+                </td>
+              `).join('')}
+            </tr>
+          `;
+        });
+      });
+      tbody.innerHTML = html;
+      updateSavedCount();
+    }
+
+    function getStoredResponses() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function updateSavedCount() {
+      const list = getStoredResponses();
+      document.getElementById('savedCountBadge').textContent = list.length;
+      const headerBadge = document.getElementById('headerAdminBadge');
+      if (headerBadge) headerBadge.textContent = list.length;
+    }
+
+    function interpretScore(avg) {
+      if (avg >= 4.50) return { label: 'มากที่สุด', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+      if (avg >= 3.50) return { label: 'มาก', color: 'text-blue-700 bg-blue-50 border-blue-200' };
+      if (avg >= 2.50) return { label: 'ปานกลาง', color: 'text-amber-700 bg-amber-50 border-amber-200' };
+      if (avg >= 1.50) return { label: 'น้อย', color: 'text-orange-700 bg-orange-50 border-orange-200' };
+      return { label: 'น้อยที่สุด', color: 'text-red-700 bg-red-50 border-red-200' };
+    }
+
+    function fillAllFive() {
+      DOMAINS.forEach(d => d.items.forEach(item => {
+        const radio = document.querySelector(`input[name="${item.id}"][value="5"]`);
+        if (radio) radio.checked = true;
+      }));
+      showToast('เลือกคะแนน 5 ทุกข้อเรียบร้อยแล้ว');
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      let role = formData.get('role');
+      if (role === 'อื่น ๆ') {
+        const otherTxt = document.getElementById('roleOtherText').value.trim();
+        role = otherTxt ? `อื่น ๆ (${otherTxt})` : 'อื่น ๆ';
+      }
+
+      const scores = {};
+      let totalSum = 0;
+      let totalCount = 0;
+      const domainResults = [];
+
+      DOMAINS.forEach(domain => {
+        let dSum = 0;
+        domain.items.forEach(item => {
+          const val = parseInt(formData.get(item.id), 10);
+          scores[item.id] = val;
+          dSum += val;
+          totalSum += val;
+          totalCount++;
+        });
+        const dAvg = dSum / domain.items.length;
+        domainResults.push({
+          id: domain.id,
+          title: domain.title,
+          avg: dAvg
+        });
+      });
+
+      const totalAvg = totalSum / totalCount;
+
+      const record = {
+        submittedAt: new Date().toISOString(),
+        role,
+        experience: formData.get('experience'),
+        duration: formData.get('duration'),
+        ward: (formData.get('ward') || '').trim(),
+        kpi1_target: (formData.get('kpi1_target') || '').trim(),
+        kpi1_before: formData.get('kpi1_before') !== '' ? Number(formData.get('kpi1_before')) : null,
+        kpi1_after: formData.get('kpi1_after') !== '' ? Number(formData.get('kpi1_after')) : null,
+        kpi2_target: (formData.get('kpi2_target') || '').trim(),
+        kpi2_before: formData.get('kpi2_before') !== '' ? Number(formData.get('kpi2_before')) : null,
+        kpi2_after: formData.get('kpi2_after') !== '' ? Number(formData.get('kpi2_after')) : null,
+        scores,
+        domainAverages: Object.fromEntries(domainResults.map(d => [d.id, Number(d.avg.toFixed(2))])),
+        totalAverage: Number(totalAvg.toFixed(2)),
+        strengths: (formData.get('strengths') || '').trim(),
+        issues: (formData.get('issues') || '').trim(),
+        suggestions: (formData.get('suggestions') || '').trim()
+      };
+
+      const all = getStoredResponses();
+      all.push(record);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      updateSavedCount();
+
+      // Hide form and show thank-you confirmation (scores visible to Admin only)
+      form.classList.add('hidden');
+      const resSec = document.getElementById('resultSection');
+      resSec.classList.remove('hidden');
+      resSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showToast('บันทึกผลการประเมินเรียบร้อยแล้ว');
+    }
+
+    function resetForm() {
+      const form = document.getElementById('evalForm');
+      form.reset();
+      form.classList.remove('hidden');
+      document.getElementById('resultSection').classList.add('hidden');
+      showToast('ล้างข้อมูลแบบฟอร์มแล้ว');
+    }
+
+    function resetForNextPerson() {
+      const form = document.getElementById('evalForm');
+      form.reset();
+      form.classList.remove('hidden');
+      document.getElementById('resultSection').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast('พร้อมสำหรับผู้ประเมินท่านถัดไป');
+    }
+
+    function openDashboardModal() {
+      const list = getStoredResponses();
+      const body = document.getElementById('dashboardBody');
+
+      if (!list.length) {
+        body.innerHTML = `
+          <div class="text-center py-12 text-slate-500">
+            <div class="text-4xl mb-2">📋</div>
+            <p class="font-semibold">ยังไม่มีข้อมูลการประเมินที่บันทึกไว้ในเครื่องนี้</p>
+            <p class="text-xs mt-1">กรุณากรอกแบบประเมินและกดส่งข้อมูล ระบบจะรวบรวมค่าเฉลี่ยให้อัตโนมัติ</p>
+          </div>
+        `;
+      } else {
+        const n = list.length;
+        const overallAvg = list.reduce((acc, r) => acc + r.totalAverage, 0) / n;
+        const overallInterp = interpretScore(overallAvg);
+
+        // Item averages
+        const itemStats = [];
+        DOMAINS.forEach(d => {
+          d.items.forEach(it => {
+            const vals = list.map(r => r.scores[it.id]).filter(v => typeof v === 'number');
+            const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+            const variance = vals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / vals.length;
+            const sd = Math.sqrt(variance);
+            itemStats.push({ domain: d.title, text: it.text, mean, sd });
+          });
+        });
+
+        // Comments
+        const comments = list.filter(r => r.strengths || r.issues || r.suggestions);
+
+        // KPI Aggregations
+        const k1BeforeList = list.map(r => r.kpi1_before).filter(v => typeof v === 'number');
+        const k1AfterList = list.map(r => r.kpi1_after).filter(v => typeof v === 'number');
+        const k2BeforeList = list.map(r => r.kpi2_before).filter(v => typeof v === 'number');
+        const k2AfterList = list.map(r => r.kpi2_after).filter(v => typeof v === 'number');
+        const avgNum = arr => arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1) : '-';
+        const latestK1Target = [...list].reverse().find(r => r.kpi1_target)?.kpi1_target || '0 ครั้ง/เดือน';
+        const latestK2Target = [...list].reverse().find(r => r.kpi2_target)?.kpi2_target || 'ไม่เกิน 15 นาที/เดือน';
+
+        body.innerHTML = `
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <div class="text-xs text-blue-700 font-semibold">จำนวนผู้ตอบแบบประเมิน</div>
+              <div class="text-3xl font-bold text-[#0B3D6B] mt-1">${n} <span class="text-sm font-normal">ราย</span></div>
+            </div>
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+              <div class="text-xs text-emerald-700 font-semibold">คะแนนเฉลี่ยรวมทุกด้าน</div>
+              <div class="text-3xl font-bold text-emerald-800 mt-1">${overallAvg.toFixed(2)} <span class="text-sm font-normal">/ 5.00</span></div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div class="text-xs text-slate-600 font-semibold">แปลผลความพึงพอใจ</div>
+              <div class="text-2xl font-bold text-slate-800 mt-1">${overallInterp.label}</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="border border-blue-200 bg-blue-50/40 rounded-xl p-4">
+              <div class="text-xs font-bold text-[#0B3D6B]">KPI 1: สารน้ำ/ยาหมดเกินเวลาเปลี่ยนขวด</div>
+              <div class="text-xs text-[#1D5EA8] font-semibold mt-0.5">เป้าหมาย: ${escapeHtml(latestK1Target)}</div>
+              <div class="mt-2 flex items-baseline gap-3 text-sm">
+                <span>ก่อนใช้เฉลี่ย: <b>${avgNum(k1BeforeList)}</b> ครั้ง</span>
+                <span>→</span>
+                <span class="text-emerald-700">หลังใช้เฉลี่ย: <b>${avgNum(k1AfterList)}</b> ครั้ง</span>
+              </div>
+            </div>
+            <div class="border border-emerald-200 bg-emerald-50/40 rounded-xl p-4">
+              <div class="text-xs font-bold text-[#0B3D6B]">KPI 2: เวลาที่ใช้จัดทำรายงานสิ้นเดือน</div>
+              <div class="text-xs text-[#2E7D4F] font-semibold mt-0.5">เป้าหมาย: ${escapeHtml(latestK2Target)}</div>
+              <div class="mt-2 flex items-baseline gap-3 text-sm">
+                <span>ก่อนใช้เฉลี่ย: <b>${avgNum(k2BeforeList)}</b> นาที</span>
+                <span>→</span>
+                <span class="text-emerald-700">หลังใช้เฉลี่ย: <b>${avgNum(k2AfterList)}</b> นาที</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-slate-800 text-sm mb-2">คะแนนเฉลี่ย (Mean) และส่วนเบี่ยงเบนมาตรฐาน (S.D.) รายข้อ</h4>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+              <table class="w-full text-xs sm:text-sm border-collapse">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700">
+                    <th class="py-2.5 px-3 text-left">ข้อคำถาม</th>
+                    <th class="py-2.5 px-3 text-center w-20">Mean</th>
+                    <th class="py-2.5 px-3 text-center w-20">S.D.</th>
+                    <th class="py-2.5 px-3 text-center w-28">แปลผล</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                  ${itemStats.map(st => {
+                    const itInterp = interpretScore(st.mean);
+                    return `
+                      <tr>
+                        <td class="py-2 px-3 text-slate-700">${st.text}</td>
+                        <td class="py-2 px-3 text-center font-bold text-[#1D5EA8]">${st.mean.toFixed(2)}</td>
+                        <td class="py-2 px-3 text-center text-slate-500">${st.sd.toFixed(2)}</td>
+                        <td class="py-2 px-3 text-center font-semibold">${itInterp.label}</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          ${comments.length ? `
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm mb-2">ข้อเสนอแนะและข้อคิดเห็นจากผู้ใช้งาน (${comments.length} รายการ)</h4>
+              <div class="space-y-2.5">
+                ${comments.map((c, idx) => `
+                  <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs space-y-1">
+                    <div class="font-bold text-[#0B3D6B]">ผู้ตอบคนที่ ${idx + 1} (${c.role} · ประสบการณ์ ${c.experience})</div>
+                    ${c.strengths ? `<div><span class="font-semibold text-emerald-700">จุดเด่น:</span> ${escapeHtml(c.strengths)}</div>` : ''}
+                    ${c.issues ? `<div><span class="font-semibold text-red-700">ปัญหาที่พบ:</span> ${escapeHtml(c.issues)}</div>` : ''}
+                    ${c.suggestions ? `<div><span class="font-semibold text-blue-700">ข้อเสนอแนะ:</span> ${escapeHtml(c.suggestions)}</div>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        `;
+      }
+
+      const modal = document.getElementById('dashboardModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDashboardModal() {
+      const modal = document.getElementById('dashboardModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function clearAllStored() {
+      const list = getStoredResponses();
+      if (!list.length) return;
+      localStorage.removeItem(STORAGE_KEY);
+      updateSavedCount();
+      openDashboardModal();
+      showToast('ล้างข้อมูลผลประเมินสะสมเรียบร้อยแล้ว');
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    function exportSummaryCsv() {
+      const list = getStoredResponses();
+      if (!list.length) {
+        showToast('ยังไม่มีข้อมูลสำหรับส่งออก');
+        return;
+      }
+      const qIds = DOMAINS.flatMap(d => d.items.map(i => i.id));
+      const headers = [
+        'ลำดับ', 'วันเวลาที่ประเมิน', 'ตำแหน่ง', 'ประสบการณ์', 'ระยะเวลาใช้งาน', 'หน่วยงาน',
+        'KPI1_เป้าหมาย(สารน้ำหมดเกินเวลา)', 'KPI1_ก่อนใช้(ครั้ง)', 'KPI1_หลังใช้(ครั้ง)',
+        'KPI2_เป้าหมาย(เวลาทำรายงานสิ้นเดือน)', 'KPI2_ก่อนใช้(นาที)', 'KPI2_หลังใช้(นาที)',
+        ...qIds, 'คะแนนเฉลี่ยรวม', 'จุดเด่น', 'ปัญหาที่พบ', 'ข้อเสนอแนะ'
+      ];
+      const rows = list.map((r, idx) => [
+        idx + 1,
+        new Date(r.submittedAt).toLocaleString('th-TH'),
+        r.role,
+        r.experience,
+        r.duration,
+        r.ward || '-',
+        r.kpi1_target || '-',
+        r.kpi1_before ?? '',
+        r.kpi1_after ?? '',
+        r.kpi2_target || '-',
+        r.kpi2_before ?? '',
+        r.kpi2_after ?? '',
+        ...qIds.map(id => r.scores[id] || ''),
+        r.totalAverage.toFixed(2),
+        r.strengths || '',
+        r.issues || '',
+        r.suggestions || ''
+      ]);
+
+      const csvContent = '\uFEFF' + [headers, ...rows]
+        .map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+        .join('\r\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ผลประเมินระบบติดตามสารน้ำ_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('ดาวน์โหลดไฟล์ Excel (.csv) เรียบร้อยแล้ว');
+    }
+
+    // Init
+    renderQuestions();
+  </script>
+</body>
+</html>
